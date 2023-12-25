@@ -217,7 +217,7 @@ class CTkEntryMsg(CTkFrame):
         if self._highlight:
             self._entry.configure(fg_color = self._highlight_color.warn)
         self._msg.configure(text = msg, text_color = self._msg_color.warn, anchor='ne', font=self._msg_font)
-        self._msg.grid(row=1, column=0, sticky='ne')
+        self._msg.grid(row=1, column=0, sticky='ne', padx=(0,5), pady=(5,0))
         self._msg.after(timeout if timeout else self._msg_timeout, lambda: self._restore_state(persist_msg, persist_highlight))
 
     def msg_queue(self, messages: list[tuple]) -> None:
