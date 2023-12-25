@@ -46,13 +46,12 @@ class CTkEntryMsg(CTkFrame):
         short information, warning, and error messages below the widget.
 
         Args:
-            master (any): _description_
+            master (any): root, tkinter.Frame or CTkFrame
             default_msg (str, optional): default message. Defaults to ''.
             msg_default_color (str, optional): text color for default message. Defaults to '#000000'.
             msg_warn_color (str, optional): text color for a warning message. Defaults to '#FF9E00'.
             msg_error_color (str, optional): text color for an error message. Defaults to '#F70D0D'.
             msg_font (tuple, optional): font for message. Defaults to ('Arial', 12)
-            fg_color (str, optional): default background color for CTkEntry. Defaults to '#FFFFFF'.
             highlight (bool, optional): change the background for CTkEntry for warnings, error. Defaults to True.
             highlight_warn_fgcolor (str, optional): background color for warnings. Defaults to '#FAC36A'.
             highlight_error_fgcolor (str, optional): background color for errors. Defaults to '#FD8C8C'.
