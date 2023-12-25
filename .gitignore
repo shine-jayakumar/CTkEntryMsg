@@ -1,0 +1,25 @@
+# Byte-compiled
+__pycache__
+test*.*
+
+# Distribution / packaging
+build/
+dist/
+sdist/
+eggs/
+.eggs-info
+.eggs/
+*.egg-info/
+
+pkg/
+MANIFEST.in
+setup.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+
+
+
