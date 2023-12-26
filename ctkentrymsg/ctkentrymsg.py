@@ -3,7 +3,7 @@
 #
 # CTkEntryMsg class provides a CTkEntry widget with provision to add 
 # short information, warning, and error messages below the widget.
-# Version: v.0.0.1
+# Version: v.0.0.4
 # Author: Shine Jayakumar
 # License: MIT
 
