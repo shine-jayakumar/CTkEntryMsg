@@ -1,4 +1,8 @@
 # CTkEntryMsg
+![Version](https://img.shields.io/static/v1?label=version&message=v.0.0.5&color=blue)
+![License](https://img.shields.io/static/v1?label=license&message=MIT&color=green)
+![Open Source](https://img.shields.io/static/v1?label=OpenSource&message=Yes&color=brightgreen)
+
 ### CTkEntry widget with messages
 
 CTkEntry widget with provision to add 
