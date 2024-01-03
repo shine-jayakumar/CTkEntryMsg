@@ -3,7 +3,7 @@
 #
 # CTkEntryMsg class provides a CTkEntry widget with provision to add 
 # short information, warning, and error messages below the widget.
-# Version: v.0.0.4
+# Version: v.0.0.5
 # Author: Shine Jayakumar
 # License: MIT
 
@@ -35,6 +35,7 @@ class CTkEntryMsg(CTkFrame):
             msg_warn_color: str = '#FC8309',
             msg_error_color: str = '#FC0909',
             msg_font: tuple = ('Arial', 12),
+            msg_pos: str = 'bottom',
             highlight: bool = True,
             highlight_warn_color: str = '#FAC36A',
             highlight_error_color: str = '#FF9090',
@@ -52,6 +53,7 @@ class CTkEntryMsg(CTkFrame):
             msg_warn_color (str, optional): text color for a warning message. Defaults to '#FF9E00'.
             msg_error_color (str, optional): text color for an error message. Defaults to '#F70D0D'.
             msg_font (tuple, optional): font for message. Defaults to ('Arial', 12)
+            msg_pos (str): place message above or below the entry. Valid values - 'top', 'bottom'. Defaults to 'bottom'.
             highlight (bool, optional): change the background for CTkEntry for warnings, error. Defaults to True.
             highlight_warn_fgcolor (str, optional): background color for warnings. Defaults to '#FAC36A'.
             highlight_error_fgcolor (str, optional): background color for errors. Defaults to '#FD8C8C'.
@@ -64,19 +66,41 @@ class CTkEntryMsg(CTkFrame):
             fg_color = 'transparent'
         )
         
+        if not msg_pos in ('top', 'bottom'):
+            raise Exception(f"Invalid message position msg_pos='{msg_pos}'. Valid values - 'top', 'bottom'")
+        
         self._default_msg: str = default_msg
         self._msg_color: Color = Color(warn=msg_warn_color, error=msg_error_color, default=msg_default_color)
         self._msg_font: tuple = msg_font
+        
+        self._msg_pos: str = msg_pos
+        self._entry_row: int = 0
+        self._msg_row: int = 1
+        if self._msg_pos == 'top':
+            self._entry_row = 1
+            self._msg_row = 0
+
+        self._msg_properties: dict = {
+            'top': {
+                'padding': {'x': (0,5), 'y': (0,5)},
+                'sticky': 'se',
+                'align': 'se'
+            },
+            'bottom': {
+                'padding': {'x': (0,5), 'y': (5,0)},
+                'sticky': 'ne',
+                'align': 'ne'
+            }
+        }
 
         self._highlight_color: Color = Color(warn=highlight_warn_color, error=highlight_error_color) 
         self._highlight: bool = highlight
         
         self._msg_timeout: int = msg_timeout
-
         self._msg_queue: list[tuple] = []
 
         self._entry = CTkEntry(master=self, *args, **kwargs)
-        self._entry.grid(row=0, column=0, sticky='ne')
+        self._entry.grid(row=self._entry_row, column=0, sticky='ne')
 
         self._msg = CTkLabel(self, text=self._default_msg)
         self._msg.configure(
@@ -85,7 +109,9 @@ class CTkEntryMsg(CTkFrame):
             font=self._msg_font
         )
         if self._default_msg:
-            self._msg.grid(row=1, column=0, sticky='ne', padx=(0,5))
+            self._msg.grid(row=self._msg_row, column=0, 
+                           sticky=self._msg_properties[self._msg_pos]['sticky'],
+                           padx=self._msg_properties[self._msg_pos]['padding']['x'])
         
         # entry box default foreground and text color
         self._default_fgcolor: str = self._entry.cget('fg_color') if \
@@ -140,8 +166,12 @@ class CTkEntryMsg(CTkFrame):
         """
         if self._highlight:
             self._entry.configure(fg_color = self._highlight_color.error)
-        self._msg.configure(text = msg.msg, text_color = self._msg_color.error, anchor='ne', font=self._msg_font)
-        self._msg.grid(row=1, column=0, sticky='ne', padx=(0,5), pady=(5,0))
+        self._msg.configure(text = msg.msg, text_color = self._msg_color.error, 
+                            anchor=self._msg_properties[self._msg_pos]['align'], font=self._msg_font)
+        self._msg.grid(row=self._msg_row, column=0, 
+                       sticky=self._msg_properties[self._msg_pos]['sticky'], 
+                       padx=self._msg_properties[self._msg_pos]['padding']['x'], 
+                       pady=self._msg_properties[self._msg_pos]['padding']['y'])
         self._msg.after(msg.timeout if msg.timeout else self._msg_timeout, callback)
     
     def _msg_queue_showwarn(self, msg: Msg, callback: Callable | None = None) -> None:
@@ -154,8 +184,12 @@ class CTkEntryMsg(CTkFrame):
         """
         if self._highlight:
             self._entry.configure(fg_color = self._highlight_color.warn)
-        self._msg.configure(text = msg.msg, text_color = self._msg_color.warn, anchor='ne', font=self._msg_font)
-        self._msg.grid(row=1, column=0, sticky='ne', padx=(0,5), pady=(5,0))
+        self._msg.configure(text = msg.msg, text_color = self._msg_color.warn, 
+                            anchor=self._msg_properties[self._msg_pos]['align'], font=self._msg_font)
+        self._msg.grid(row=self._msg_row, column=0, 
+                       sticky=self._msg_properties[self._msg_pos]['sticky'], 
+                       padx=self._msg_properties[self._msg_pos]['padding']['x'], 
+                       pady=self._msg_properties[self._msg_pos]['padding']['y'])
         self._msg.after(msg.timeout if msg.timeout else self._msg_timeout, callback)
 
     def _get_msg_from_queue(self) -> Msg:
@@ -200,8 +234,12 @@ class CTkEntryMsg(CTkFrame):
         """
         if self._highlight:
             self._entry.configure(fg_color = self._highlight_color.error)
-        self._msg.configure(text = msg, text_color = self._msg_color.error, anchor='ne', font=self._msg_font)
-        self._msg.grid(row=1, column=0, sticky='ne', padx=(0,5), pady=(5,0))
+        self._msg.configure(text = msg, text_color = self._msg_color.error, 
+                            anchor=self._msg_properties[self._msg_pos]['align'], font=self._msg_font)
+        self._msg.grid(row=self._msg_row, column=0, 
+                       sticky=self._msg_properties[self._msg_pos]['sticky'], 
+                       padx=self._msg_properties[self._msg_pos]['padding']['x'],
+                       pady=self._msg_properties[self._msg_pos]['padding']['y'])
         self._msg.after(timeout if timeout else self._msg_timeout, lambda: self._restore_state(persist_msg, persist_highlight))
 
     def showwarn(self, msg: str, persist_msg: bool = False, persist_highlight: bool = False, timeout: int|None = None) -> None:
@@ -215,8 +253,12 @@ class CTkEntryMsg(CTkFrame):
         """
         if self._highlight:
             self._entry.configure(fg_color = self._highlight_color.warn)
-        self._msg.configure(text = msg, text_color = self._msg_color.warn, anchor='ne', font=self._msg_font)
-        self._msg.grid(row=1, column=0, sticky='ne', padx=(0,5), pady=(5,0))
+        self._msg.configure(text = msg, text_color = self._msg_color.warn, 
+                            anchor=self._msg_properties[self._msg_pos]['align'], font=self._msg_font)
+        self._msg.grid(row=self._msg_row, column=0, 
+                       sticky=self._msg_properties[self._msg_pos]['sticky'], 
+                       padx=self._msg_properties[self._msg_pos]['padding']['x'], 
+                       pady=self._msg_properties[self._msg_pos]['padding']['y'])
         self._msg.after(timeout if timeout else self._msg_timeout, lambda: self._restore_state(persist_msg, persist_highlight))
 
     def msg_queue(self, messages: list[tuple]) -> None:
