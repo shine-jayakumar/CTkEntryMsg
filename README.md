@@ -81,6 +81,7 @@ root.mainloop()
 | msg_warn_color | message text color for warnings. Defaults to #FC8309 |
 | msg_error_color | message text color for errors. Defaults to #FC0909 |
 | msg_font: tuple | message font. Defaults to ('Arial', 12)|
+| msg_pos (str) | place message above or below the entry. Valid values - 'top', 'bottom'. Defaults to 'bottom'. |
 | highlight | change entry widget's foreground color on warning or error. Default is True |
 | highlight_warn_color | foreground color for entry on warning. Defaults to #FAC36A |
 | highlight_error_color | foreground color for entry on error. Defaults to #FF9090 |
